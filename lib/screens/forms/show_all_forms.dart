@@ -78,15 +78,47 @@ class _ShowAllFormsScreenState extends State<ShowAllFormsScreen> with TickerProv
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       children: [
-                        //رقم النموذج
+                        //الجميع
                         InkWell(
                           onTap: () {
                             setState(() {
-                              if(!formIdFilter){
-                                formIdFilter = true;
+                              if(!allFilter){
+                                allFilter = true;
                                 bodyNumberFilter = false;
                                 namesFilter = false;
+                                formIdFilter = false;
+                                carSignFilter = false;
+
+                                widget.customer.searchFormsList.clear();
+
+                                this.pageCount = 1;
+                                customSearchBar = const Text('قائمة النماذج', style: TextStyle(color: txtColor),);
+                                updateListView = widget.customer.getAllForms(pageCount);
+                              }
+                            });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.black54,
+                              ),
+                              borderRadius: BorderRadius.all(Radius.circular(20)),
+                              color: allFilter ? secondaryColor : bgColor,
+                            ),
+                            margin: EdgeInsets.only(top: defaultPadding/2, bottom: defaultPadding/2, right: defaultPadding, left: defaultPadding),
+                            padding: EdgeInsets.only(top: defaultPadding/2, bottom: defaultPadding/2, right: defaultPadding, left: defaultPadding),
+                            child: Text("الجميع", style: TextStyle(color: txtColor, fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                        //رقم شصي
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              if(!bodyNumberFilter){
+                                bodyNumberFilter = true;
+                                namesFilter = false;
                                 allFilter = false;
+                                formIdFilter = false;
                                 carSignFilter = false;
 
                                 this.searchFormIDController.text = '';
@@ -96,7 +128,7 @@ class _ShowAllFormsScreenState extends State<ShowAllFormsScreen> with TickerProv
                                       setState(() {
                                         this.pageCount = 1;
                                         widget.customer.searchFormsList.clear();
-                                        updateListView =  widget.customer.getOneForm(this.searchFormIDController.text);
+                                        updateListView = widget.customer.getAllFormsByBodyNumber(pageCount, this.searchFormIDController.text);
                                       });
                                     },
                                     icon: Icon(
@@ -109,7 +141,7 @@ class _ShowAllFormsScreenState extends State<ShowAllFormsScreen> with TickerProv
                                     controller: searchFormIDController,
                                     style: TextStyle(color: txtColor),
                                     decoration: InputDecoration(
-                                      hintText: 'أدخل رقم النموذج...',
+                                      hintText: 'أدخل رقم الشصي او جزء منه...',
                                       fillColor: secondaryColor,
                                       hintStyle: TextStyle(color: txtColor),
                                       border: InputBorder.none,
@@ -125,11 +157,65 @@ class _ShowAllFormsScreenState extends State<ShowAllFormsScreen> with TickerProv
                                 color: Colors.black54,
                               ),
                               borderRadius: BorderRadius.all(Radius.circular(20)),
-                              color: formIdFilter ? secondaryColor : bgColor,
+                              color: bodyNumberFilter ? secondaryColor : bgColor,
                             ),
                             margin: EdgeInsets.only(top: defaultPadding/2, bottom: defaultPadding/2, right: defaultPadding, left: defaultPadding),
                             padding: EdgeInsets.only(top: defaultPadding/2, bottom: defaultPadding/2, right: defaultPadding, left: defaultPadding),
-                            child: Text("حسب رقم النموذج", style: TextStyle(color: txtColor, fontWeight: FontWeight.bold)),
+                            child: Text("حسب رقم الشصي", style: TextStyle(color: txtColor, fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                        //إسم طالب الفحص
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              if(!namesFilter){
+                                namesFilter = true;
+                                bodyNumberFilter = false;
+                                allFilter = false;
+                                formIdFilter = false;
+                                carSignFilter = false;
+
+                                this.searchFormIDController.text = '';
+                                customSearchBar = ListTile(
+                                  leading: IconButton(
+                                    onPressed: (){
+                                      setState(() {
+                                        this.pageCount = 1;
+                                        widget.customer.searchFormsList.clear();
+                                        updateListView = widget.customer.getAllFormsByName(pageCount, this.searchFormIDController.text);
+                                      });
+                                    },
+                                    icon: Icon(
+                                      Icons.search,
+                                      color: iconColor,
+                                      size: 28,
+                                    ),
+                                  ),
+                                  title: TextField(
+                                    controller: searchFormIDController,
+                                    style: TextStyle(color: txtColor),
+                                    decoration: InputDecoration(
+                                      hintText: 'أدخل الإسم أو جزء من الإسم...',
+                                      fillColor: secondaryColor,
+                                      hintStyle: TextStyle(color: txtColor),
+                                      border: InputBorder.none,
+                                    ),
+                                  ),
+                                );
+                              }
+                            });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.black54,
+                              ),
+                              borderRadius: BorderRadius.all(Radius.circular(20)),
+                              color: namesFilter ? secondaryColor : bgColor,
+                            ),
+                            margin: EdgeInsets.only(top: defaultPadding/2, bottom: defaultPadding/2, right: defaultPadding, left: defaultPadding),
+                            padding: EdgeInsets.only(top: defaultPadding/2, bottom: defaultPadding/2, right: defaultPadding, left: defaultPadding),
+                            child: Text("حسب إسم طالب الفحص", style: TextStyle(color: txtColor, fontWeight: FontWeight.bold)),
                           ),
                         ),
                         //لوحة السيارة
@@ -187,15 +273,15 @@ class _ShowAllFormsScreenState extends State<ShowAllFormsScreen> with TickerProv
                             child: Text("حسب لوحة السيارة", style: TextStyle(color: txtColor, fontWeight: FontWeight.bold)),
                           ),
                         ),
-                        //إسم طالب الفحص
+                        //رقم النموذج
                         InkWell(
                           onTap: () {
                             setState(() {
-                              if(!namesFilter){
-                                namesFilter = true;
+                              if(!formIdFilter){
+                                formIdFilter = true;
                                 bodyNumberFilter = false;
+                                namesFilter = false;
                                 allFilter = false;
-                                formIdFilter = false;
                                 carSignFilter = false;
 
                                 this.searchFormIDController.text = '';
@@ -205,7 +291,7 @@ class _ShowAllFormsScreenState extends State<ShowAllFormsScreen> with TickerProv
                                       setState(() {
                                         this.pageCount = 1;
                                         widget.customer.searchFormsList.clear();
-                                        updateListView = widget.customer.getAllFormsByName(pageCount, this.searchFormIDController.text);
+                                        updateListView =  widget.customer.getOneForm(this.searchFormIDController.text);
                                       });
                                     },
                                     icon: Icon(
@@ -218,7 +304,7 @@ class _ShowAllFormsScreenState extends State<ShowAllFormsScreen> with TickerProv
                                     controller: searchFormIDController,
                                     style: TextStyle(color: txtColor),
                                     decoration: InputDecoration(
-                                      hintText: 'أدخل الإسم أو جزء من الإسم...',
+                                      hintText: 'أدخل رقم النموذج...',
                                       fillColor: secondaryColor,
                                       hintStyle: TextStyle(color: txtColor),
                                       border: InputBorder.none,
@@ -234,97 +320,11 @@ class _ShowAllFormsScreenState extends State<ShowAllFormsScreen> with TickerProv
                                 color: Colors.black54,
                               ),
                               borderRadius: BorderRadius.all(Radius.circular(20)),
-                              color: namesFilter ? secondaryColor : bgColor,
+                              color: formIdFilter ? secondaryColor : bgColor,
                             ),
                             margin: EdgeInsets.only(top: defaultPadding/2, bottom: defaultPadding/2, right: defaultPadding, left: defaultPadding),
                             padding: EdgeInsets.only(top: defaultPadding/2, bottom: defaultPadding/2, right: defaultPadding, left: defaultPadding),
-                            child: Text("حسب إسم طالب الفحص", style: TextStyle(color: txtColor, fontWeight: FontWeight.bold)),
-                          ),
-                        ),
-                        //رقم شصي
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              if(!bodyNumberFilter){
-                                bodyNumberFilter = true;
-                                namesFilter = false;
-                                allFilter = false;
-                                formIdFilter = false;
-                                carSignFilter = false;
-
-                                this.searchFormIDController.text = '';
-                                customSearchBar = ListTile(
-                                  leading: IconButton(
-                                    onPressed: (){
-                                      setState(() {
-                                        this.pageCount = 1;
-                                        widget.customer.searchFormsList.clear();
-                                        updateListView = widget.customer.getAllFormsByBodyNumber(pageCount, this.searchFormIDController.text);
-                                      });
-                                    },
-                                    icon: Icon(
-                                      Icons.search,
-                                      color: iconColor,
-                                      size: 28,
-                                    ),
-                                  ),
-                                  title: TextField(
-                                    controller: searchFormIDController,
-                                    style: TextStyle(color: txtColor),
-                                    decoration: InputDecoration(
-                                      hintText: 'أدخل رقم الشصي او جزء منه...',
-                                      fillColor: secondaryColor,
-                                      hintStyle: TextStyle(color: txtColor),
-                                      border: InputBorder.none,
-                                    ),
-                                  ),
-                                );
-                              }
-                            });
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.black54,
-                              ),
-                              borderRadius: BorderRadius.all(Radius.circular(20)),
-                              color: bodyNumberFilter ? secondaryColor : bgColor,
-                            ),
-                            margin: EdgeInsets.only(top: defaultPadding/2, bottom: defaultPadding/2, right: defaultPadding, left: defaultPadding),
-                            padding: EdgeInsets.only(top: defaultPadding/2, bottom: defaultPadding/2, right: defaultPadding, left: defaultPadding),
-                            child: Text("حسب رقم الشصي", style: TextStyle(color: txtColor, fontWeight: FontWeight.bold)),
-                          ),
-                        ),
-                        //الجميع
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              if(!allFilter){
-                                allFilter = true;
-                                bodyNumberFilter = false;
-                                namesFilter = false;
-                                formIdFilter = false;
-                                carSignFilter = false;
-
-                                widget.customer.searchFormsList.clear();
-
-                                this.pageCount = 1;
-                                customSearchBar = const Text('قائمة النماذج', style: TextStyle(color: txtColor),);
-                                updateListView = widget.customer.getAllForms(pageCount);
-                              }
-                            });
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.black54,
-                              ),
-                              borderRadius: BorderRadius.all(Radius.circular(20)),
-                              color: allFilter ? secondaryColor : bgColor,
-                            ),
-                            margin: EdgeInsets.only(top: defaultPadding/2, bottom: defaultPadding/2, right: defaultPadding, left: defaultPadding),
-                            padding: EdgeInsets.only(top: defaultPadding/2, bottom: defaultPadding/2, right: defaultPadding, left: defaultPadding),
-                            child: Text("الجميع", style: TextStyle(color: txtColor, fontWeight: FontWeight.bold)),
+                            child: Text("حسب رقم النموذج", style: TextStyle(color: txtColor, fontWeight: FontWeight.bold)),
                           ),
                         ),
 
